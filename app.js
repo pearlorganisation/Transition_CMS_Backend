@@ -20,10 +20,11 @@ app.use(
   cors({
     origin:
       process.env.NODE_ENV === "development"
-        ? ["http://localhost:5173", "http://localhost:5174"]
+        ? ["http://localhost:5173", "http://localhost:5174", "http://localhost:3000"]
+
         : ["https://cele.vercel.app"],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"], // Specify allowed methods
-    credentials: true,
+    // credentials: true,
   })
 );
 app.use(express.urlencoded({ extended: true }));
@@ -34,6 +35,7 @@ app.use(morgan("dev"));
 //Routes imports
 import teamRouter from "./src/routes/teamsRoute.js";
 import newsRouter from "./src/routes/newsRoute.js";
+import articleRouter from "./src/routes/articleRoute.js"
 import { errorHandler, notFound } from "./src/utils/errors/errorHandler.js";
 
 app.get("/", (req, res) => {
@@ -45,6 +47,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1/teams", teamRouter);
 app.use("/api/v1/news", newsRouter);
+app.use("/api/v1/articles", articleRouter);
 
 app.use(notFound);
 app.use(errorHandler);
