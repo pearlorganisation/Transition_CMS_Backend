@@ -9,8 +9,9 @@ const teamSchema = new mongoose.Schema(
       public_id: { type: String, required: true },
     },
 
-    designation: { type: String, required: true },
-    linkedinLink: { type: String, required: true },
+    bio: { type: String, required: true },
+    link: { type: String, required: true },
+    type: { type: String, required: true },
   },
   { timestamps: true }
 );

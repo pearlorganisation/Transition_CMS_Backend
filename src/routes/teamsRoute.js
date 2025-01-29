@@ -12,6 +12,10 @@ import fileParser from "../middlewares/fileParser.js";
 const router = express.Router();
 
 router.route("/").get(getAllTeams).post(fileParser, createTeam);
-router.route("/:id").delete(deleteTeam).get(getSingleTeam).patch(updateTeam);
+router
+  .route("/:id")
+  .delete(deleteTeam)
+  .get(getSingleTeam)
+  .patch(fileParser, updateTeam);
 
 export default router;

@@ -3,7 +3,6 @@ import { app } from "./app.js";
 import { connectToMongoDB } from "./src/config/db.js";
 
 dotenv.config();
-
 const PORT = process.env.PORT || 8000;
 
 connectToMongoDB()
