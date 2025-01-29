@@ -1,5 +1,9 @@
+import mongoose from "mongoose";
 import Team from "../models/team.js";
-import { uploadFileToCloudinary } from "../utils/cloudinaryConfig.js";
+import {
+  deleteFileFromCloudinary,
+  uploadFileToCloudinary,
+} from "../utils/cloudinaryConfig.js";
 import ApiErrorResponse from "../utils/errors/ApiErrorResponse.js";
 import { asyncHandler } from "../utils/errors/asyncHandler.js";
 import { paginate } from "../utils/pagination.js";
@@ -57,7 +61,53 @@ export const deleteTeam = asyncHandler(async (req, res, next) => {
   });
 });
 
-export const updateTeam = asyncHandler(async (req, res, next) => {});
+// export const updateTeam = asyncHandler(async (req, res, next) => {
+//   const { id } = req.params; // Get the team ID from params
+//   const { image } = req.files || {}; // Extract image file if provided
+
+//   // Find the existing team
+//   const team = await Team.findById(id);
+
+//   // Handle case where the team doesn't exist
+//   if (!team) {
+//     return next(new ApiErrorResponse("Team not found", 404));
+//   }
+
+//   let uploadedImage = null;
+
+//   // If a new image is provided, upload it and delete the old one
+//   if (image) {
+//     // Upload the new image to Cloudinary
+//     uploadedImage = await uploadFileToCloudinary(image);
+
+//     // Delete the old image from Cloudinary if it exists
+//     if (team.image && team.image.public_id) {
+//       await deleteFileFromCloudinary(team.image.public_id);
+//     }
+//   }
+
+//   // Update the team with new data and image
+//   const updatedTeam = await Team.findByIdAndUpdate(
+//     id,
+//     {
+//       ...req.body,
+//       image: uploadedImage ? uploadedImage[0] : team.image, // Use new image or keep old one
+//     },
+//     { new: true, runValidators: true }
+//   );
+
+//   // Handle update failure
+//   if (!updatedTeam) {
+//     return next(new ApiErrorResponse("Team update failed", 400));
+//   }
+
+//   // Return successful response
+//   return res.status(200).json({
+//     success: true,
+//     message: "Team updated successfully",
+//     data: updatedTeam,
+//   });
+// });
 
 export const createTeam = asyncHandler(async (req, res, next) => {
   const { image } = req.files;
@@ -73,7 +123,7 @@ export const createTeam = asyncHandler(async (req, res, next) => {
 
   // Handle creation failure
   if (!teamInfo) {
-    return next(new ApiErrorResponse("Obituary creation failed", 400));
+    return next(new ApiErrorResponse("Team creation failed", 400));
   }
 
   // Return successful response
@@ -81,5 +131,51 @@ export const createTeam = asyncHandler(async (req, res, next) => {
     success: true,
     message: "Team created successfully",
     data: teamInfo,
+  });
+});
+
+export const updateTeam = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const { image } = req.files || {};
+
+  // Find the existing team by ID
+  const team = await Team.findById(id);
+
+  // Handle case where team does not exist
+  if (!team) {
+    return next(new ApiErrorResponse("Team not found", 404));
+  }
+
+  // Upload new image to Cloudinary if provided
+  let updatedImage = team.image; // Retain the old image by default
+  if (image) {
+    updatedImage = await uploadFileToCloudinary(image);
+  }
+
+  console.log(updatedImage, "Updated Image");
+  console.log(req.body, "Req Body");
+  // Update team fields
+  const updatedTeam = await Team.findOneAndUpdate(
+    { _id: new mongoose.Types.ObjectId(`${id}`) },
+
+    {
+      ...req.body,
+      image: updatedImage[0],
+    },
+    { new: true } // Return the updated document and validate fields
+  );
+
+  //   console.log("Updated Team 1234: ", updatedTeam);
+
+  // Handle update failure
+  if (!updatedTeam) {
+    return next(new ApiErrorResponse("Team update failed", 400));
+  }
+
+  // Return successful response
+  return res.status(200).json({
+    success: true,
+    message: "Team updated successfully1234",
+    data: updatedTeam,
   });
 });

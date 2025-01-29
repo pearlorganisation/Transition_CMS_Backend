@@ -15,6 +15,7 @@ app.set("views", path.resolve("./views"));
 dontenv.config();
 
 // Middlewares
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(
   cors({
@@ -26,7 +27,6 @@ app.use(
     credentials: true,
   })
 );
-app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(cookieParser());
 app.use(morgan("dev"));
