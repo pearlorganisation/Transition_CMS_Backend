@@ -3,35 +3,21 @@ import mongoose from "mongoose";
 const PortfolioSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, unique: true },
-    // banner: {
-    //   asset_id: { type: String, required: true },
-    //   secure_url: { type: String, required: true },
-    //   public_id: { type: String, required: true },
-    // },
     logo: {
       asset_id: { type: String, required: true },
       secure_url: { type: String, required: true },
       public_id: { type: String, required: true },
     },
     logoLink: { type: String, required: false }, // Optional link for the logo
-    // investmentTimeline: {
-    //   description: { type: String, required: true },
-    //   cards: [
-    //     {
-    //       icon: {
-    //         asset_id: { type: String, required: true },
-    //         secure_url: { type: String, required: true },
-    //         public_id: { type: String, required: true },
-    //       },
-    //       title: { type: String, required: true },
-    //       body: { type: String, required: true },
-    //     },
-    //   ],
-    // },
+    investmentTimeline: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "InvestmentTimeline",
+    },
     investmentYear: { type: Number, required: true }, // e.g., 2024
     overview: { type: String, required: true },
     mainDescription: { type: String, required: true },
     cards: [
+      // use  refer
       {
         title: { type: String, required: true },
         description: { type: String, required: true },
