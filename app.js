@@ -45,6 +45,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1/teams", teamRouter);
 app.use("/api/v1/news", newsRouter);
+app.use("/api/v1/focusarea", teamRouter);
 
 app.use(notFound);
 app.use(errorHandler);
