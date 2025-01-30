@@ -1,4 +1,4 @@
-import News from "../models/news.js";
+ import News from "../models/news.js";
 import { uploadFileToCloudinary } from "../utils/cloudinaryConfig.js";
 import ApiErrorResponse from "../utils/errors/ApiErrorResponse.js";
 import { asyncHandler } from "../utils/errors/asyncHandler.js";
@@ -83,3 +83,6 @@ export const createNews = asyncHandler(async (req, res, next) => {
     data: newsInfo,
   });
 });
+
+
+ 
