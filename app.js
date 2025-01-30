@@ -40,6 +40,7 @@ import teamRouter from "./src/routes/teamsRoute.js";
 import newsRouter from "./src/routes/newsRoute.js";
 import articleRouter from "./src/routes/articleRoute.js";
 import podcastRouter from "./src/routes/podcastRoute.js";
+import coInvestorRouter from "./src/routes/coInvestorRoute.js";
 import { errorHandler, notFound } from "./src/utils/errors/errorHandler.js";
 
 app.get("/", (req, res) => {
@@ -48,12 +49,12 @@ app.get("/", (req, res) => {
 });
 
 // Routes declaration
-
 app.use("/api/v1/teams", teamRouter);
 app.use("/api/v1/news", newsRouter);
 app.use("/api/v1/focusarea", teamRouter);
 app.use("/api/v1/articles", articleRouter);
 app.use("/api/v1/podcast", podcastRouter);
+app.use("/api/v1/co-investors", coInvestorRouter);
 
 app.use(notFound);
 app.use(errorHandler);
