@@ -3,8 +3,6 @@ import formidable from "formidable";
 const fileParser = (req, res, next) => {
   const form = formidable();
 
-  console.log(req, "My Req");
-
   form.parse(req, (err, fields, files) => {
     if (err) {
       console.error("Error parsing the files", err);
