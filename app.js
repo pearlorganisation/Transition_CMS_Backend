@@ -40,6 +40,8 @@ import teamRouter from "./src/routes/teamsRoute.js";
 import newsRouter from "./src/routes/newsRoute.js";
 import articleRouter from "./src/routes/articleRoute.js";
 import podcastRouter from "./src/routes/podcastRoute.js";
+import focusFeatureRouter from "./src/routes/focusFeaturesRoute.js";
+import focusAreaRouter from "./src/routes/focusAreaRoute.js";
 import { errorHandler, notFound } from "./src/utils/errors/errorHandler.js";
 
 app.get("/", (req, res) => {
@@ -51,7 +53,8 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1/teams", teamRouter);
 app.use("/api/v1/news", newsRouter);
-app.use("/api/v1/focusarea", teamRouter);
+app.use("/api/v1/focusarea", focusAreaRouter);
+app.use("/api/v1/focus-features", focusFeatureRouter);
 app.use("/api/v1/articles", articleRouter);
 app.use("/api/v1/podcast", podcastRouter);
 
