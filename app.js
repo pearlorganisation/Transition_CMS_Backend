@@ -42,6 +42,11 @@ import articleRouter from "./src/routes/articleRoute.js";
 import podcastRouter from "./src/routes/podcastRoute.js";
 import focusFeatureRouter from "./src/routes/focusFeaturesRoute.js";
 import focusAreaRouter from "./src/routes/focusAreaRoute.js";
+import coInvestorRouter from "./src/routes/portfolio/coInvestorRoute.js";
+import investmentTimeLineCardRouter from "./src/routes/portfolio/investmentTimelineCardRoute.js";
+import portfolioCardRouter from "./src/routes/portfolio/portfolioCardRoute.js";
+import investmentTimeLineRouter from "./src/routes/portfolio/investmentTimelineRoute.js";
+import portfolioRouter from "./src/routes/portfolio/portfolioRoute.js";
 import { errorHandler, notFound } from "./src/utils/errors/errorHandler.js";
 
 app.get("/", (req, res) => {
@@ -50,13 +55,17 @@ app.get("/", (req, res) => {
 });
 
 // Routes declaration
-
 app.use("/api/v1/teams", teamRouter);
 app.use("/api/v1/news", newsRouter);
 app.use("/api/v1/focusarea", focusAreaRouter);
 app.use("/api/v1/focus-features", focusFeatureRouter);
 app.use("/api/v1/articles", articleRouter);
 app.use("/api/v1/podcast", podcastRouter);
+app.use("/api/v1/co-investors", coInvestorRouter);
+app.use("/api/v1/investment-timeline-cards", investmentTimeLineCardRouter);
+app.use("/api/v1/portfolio-cards", portfolioCardRouter);
+app.use("/api/v1/investment-timeline", investmentTimeLineRouter);
+app.use("/api/v1/portfolio", portfolioRouter);
 
 app.use(notFound);
 app.use(errorHandler);
