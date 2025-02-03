@@ -1,5 +1,8 @@
 import Portfolio from "../../models/portfolio/portfolio.js";
-import { uploadFileToCloudinary } from "../../utils/cloudinaryConfig.js";
+import {
+  deleteFileFromCloudinary,
+  uploadFileToCloudinary,
+} from "../../utils/cloudinaryConfig.js";
 import ApiErrorResponse from "../../utils/errors/ApiErrorResponse.js";
 import { asyncHandler } from "../../utils/errors/asyncHandler.js";
 
@@ -131,5 +134,26 @@ export const updatePortfolioById = asyncHandler(async (req, res, next) => {
     success: true,
     message: "Portfolio updated successfully",
     data: updatedPortfolio,
+  });
+});
+
+export const deletePortfolioById = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const portfolio = await Portfolio.findByIdAndDelete(id);
+  if (!portfolio) {
+    return next(new ApiErrorResponse("Portfolio not found", 404));
+  }
+  if (portfolio.logo) {
+    await deleteFileFromCloudinary(portfolio.logo);
+  }
+  if (portfolio.bg) {
+    await deleteFileFromCloudinary(portfolio.bg);
+  }
+  if (portfolio.bottomSectionIcon) {
+    await deleteFileFromCloudinary(portfolio.bottomSectionIcon);
+  }
+  return res.status(200).json({
+    success: true,
+    message: "Portfolio deleted successfully",
   });
 });

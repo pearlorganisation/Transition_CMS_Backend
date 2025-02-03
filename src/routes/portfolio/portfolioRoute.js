@@ -1,6 +1,7 @@
 import express from "express";
 import {
   createPortfolio,
+  deletePortfolioById,
   getAllPortfolios,
   getPortfolioById,
   updatePortfolioById,
@@ -13,6 +14,7 @@ router.route("/").post(fileParser, createPortfolio).get(getAllPortfolios);
 router
   .route("/:id")
   .get(getPortfolioById)
-  .patch(fileParser, updatePortfolioById);
+  .patch(fileParser, updatePortfolioById)
+  .delete(deletePortfolioById);
 
 export default router;
