@@ -9,7 +9,7 @@ import fileParser from "../../middlewares/fileParser.js";
 
 const router = express.Router();
 
-router.route("/").post(fileParser, createCoInvestor).get(getAllCoInvestor);
+router.route("/").post(fileParser, createCoInvestor).get(getAllCoInvestor); // No need for get api
 router
   .route("/:id")
   .patch(fileParser, updateCoInvestorById)

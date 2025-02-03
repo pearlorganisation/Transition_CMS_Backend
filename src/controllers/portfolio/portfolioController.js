@@ -110,6 +110,21 @@ export const updatePortfolioById = asyncHandler(async (req, res, next) => {
     ? await uploadFileToCloudinary(bottomSectionIcon)
     : undefined;
 
+  if (uploadedLogo) {
+    if (portfolio.logo) {
+      await deleteFileFromCloudinary(portfolio.logo);
+    }
+  }
+  if (uploadedBg) {
+    if (portfolio.bg) {
+      await deleteFileFromCloudinary(portfolio.bg);
+    }
+  }
+  if (uploadedBottomSectionIcon) {
+    if (portfolio.bottomSectionIcon) {
+      await deleteFileFromCloudinary(portfolio.bottomSectionIcon);
+    }
+  }
   const updatedPortfolio = await Portfolio.findByIdAndUpdate(
     id,
     {
