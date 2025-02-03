@@ -91,3 +91,45 @@ export const getAllPortfolios = asyncHandler(async (req, res, next) => {
     data: portfolios,
   });
 });
+
+export const updatePortfolioById = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const portfolio = await Portfolio.findById(id);
+  if (!portfolio) {
+    return next(new ApiErrorResponse("Portfolio not found", 404));
+  }
+
+  const { logo, bg, bottomSectionIcon } = req.files || {};
+
+  const uploadedLogo = logo ? await uploadFileToCloudinary(logo) : undefined;
+  const uploadedBg = bg ? await uploadFileToCloudinary(bg) : undefined;
+  const uploadedBottomSectionIcon = bottomSectionIcon
+    ? await uploadFileToCloudinary(bottomSectionIcon)
+    : undefined;
+
+  const updatedPortfolio = await Portfolio.findByIdAndUpdate(
+    id,
+    {
+      ...req.body,
+      logo: uploadedLogo ? uploadedLogo[0] : undefined,
+      bg: uploadedBg ? uploadedBg[0] : undefined,
+      bottomSectionIcon: uploadedBottomSectionIcon
+        ? uploadedBottomSectionIcon[0]
+        : undefined,
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  if (!updatedPortfolio) {
+    return next(new ApiErrorResponse("Portfolio not found", 404));
+  }
+
+  return res.status(200).json({
+    success: true,
+    message: "Portfolio updated successfully",
+    data: updatedPortfolio,
+  });
+});
