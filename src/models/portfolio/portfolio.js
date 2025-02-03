@@ -3,7 +3,13 @@ import mongoose from "mongoose";
 const PortfolioSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, unique: true },
+    title: { type: String, required: true },
     logo: {
+      asset_id: { type: String, required: true },
+      secure_url: { type: String, required: true },
+      public_id: { type: String, required: true },
+    },
+    bg: {
       asset_id: { type: String, required: true },
       secure_url: { type: String, required: true },
       public_id: { type: String, required: true },
@@ -13,7 +19,6 @@ const PortfolioSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "InvestmentTimeline",
     },
-    investmentYear: { type: Number, required: true }, // e.g., 2024
     overview: { type: String, required: true },
     mainDescription: { type: String, required: true },
     cards: [{ type: mongoose.Schema.Types.ObjectId, ref: "PortfolioCard" }],

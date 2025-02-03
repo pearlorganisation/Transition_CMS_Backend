@@ -4,10 +4,12 @@ import ApiErrorResponse from "../../utils/errors/ApiErrorResponse.js";
 import { asyncHandler } from "../../utils/errors/asyncHandler.js";
 
 export const createPortfolio = asyncHandler(async (req, res, next) => {
-  const { logo, bottomSectionIcon } = req.files || {};
+  const { logo, bottomSectionIcon, bg } = req.files || {};
 
   // Upload images to Cloudinary if they exist
   const uploadedLogo = logo ? await uploadFileToCloudinary(logo) : null;
+  const uploadedBg = bg ? await uploadFileToCloudinary(bg) : null;
+
   const uploadedBottomSectionIcon = bottomSectionIcon
     ? await uploadFileToCloudinary(bottomSectionIcon)
     : null;
@@ -16,6 +18,7 @@ export const createPortfolio = asyncHandler(async (req, res, next) => {
   const portfolio = await Portfolio.create({
     ...req.body,
     logo: uploadedLogo ? uploadedLogo[0] : null,
+    bg: uploadedBg ? uploadedBg[0] : null,
     bottomSectionIcon: uploadedBottomSectionIcon
       ? uploadedBottomSectionIcon[0]
       : null,
@@ -31,5 +34,60 @@ export const createPortfolio = asyncHandler(async (req, res, next) => {
     success: true,
     message: "Portfolio created successfully",
     data: portfolio,
+  });
+});
+
+export const getPortfolioById = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+
+  const portfolio = await Portfolio.findById(id)
+    .populate({
+      path: "investmentTimeline",
+      populate: {
+        path: "cards",
+      },
+    })
+    .populate({
+      path: "cards",
+    })
+    .populate({
+      path: "coInvestedBy",
+    });
+
+  if (!portfolio) {
+    return next(new ApiErrorResponse("Portfolio not found", 404));
+  }
+
+  return res.status(200).json({
+    success: true,
+    message: "Portfolio retrieved successfully",
+    data: portfolio,
+  });
+});
+
+export const getAllPortfolios = asyncHandler(async (req, res, next) => {
+  // Fetch all portfolios and populate the necessary fields
+  const portfolios = await Portfolio.find()
+    .populate({
+      path: "investmentTimeline",
+      populate: {
+        path: "cards",
+      },
+    })
+    .populate({
+      path: "cards",
+    })
+    .populate({
+      path: "coInvestedBy",
+    });
+
+  if (!portfolios || portfolios.length === 0) {
+    return next(new ApiErrorResponse("No portfolios found", 404));
+  }
+
+  return res.status(200).json({
+    success: true,
+    message: "Portfolios retrieved successfully",
+    data: portfolios,
   });
 });
