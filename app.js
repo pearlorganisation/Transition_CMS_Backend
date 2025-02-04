@@ -48,6 +48,7 @@ import portfolioCardRouter from "./src/routes/portfolio/portfolioCardRoute.js";
 import investmentTimeLineRouter from "./src/routes/portfolio/investmentTimelineRoute.js";
 import portfolioRouter from "./src/routes/portfolio/portfolioRoute.js";
 import { errorHandler, notFound } from "./src/utils/errors/errorHandler.js";
+import { blogRouter } from "./src/routes/blog.js";
 
 app.get("/", (req, res) => {
   res.status(200).send("API Works!");
@@ -66,6 +67,7 @@ app.use("/api/v1/investment-timeline-cards", investmentTimeLineCardRouter);
 app.use("/api/v1/portfolio-cards", portfolioCardRouter);
 app.use("/api/v1/investment-timeline", investmentTimeLineRouter);
 app.use("/api/v1/portfolio", portfolioRouter);
+app.use("/api/v1/blogs",blogRouter);
 
 app.use(notFound);
 app.use(errorHandler);
