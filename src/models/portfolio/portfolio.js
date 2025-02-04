@@ -4,7 +4,7 @@ const PortfolioSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, unique: true },
     title: { type: String, required: true },
-    logo: {
+    image: {
       asset_id: { type: String, required: true },
       secure_url: { type: String, required: true },
       public_id: { type: String, required: true },

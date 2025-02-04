@@ -61,7 +61,7 @@ app.use("/api/v1/focusarea", focusAreaRouter);
 app.use("/api/v1/focus-features", focusFeatureRouter);
 app.use("/api/v1/articles", articleRouter);
 app.use("/api/v1/podcast", podcastRouter);
-app.use("/api/v1/co-investors", coInvestorRouter);
+app.use("/api/v1/co-investors", coInvestorRouter); // for admin
 app.use("/api/v1/investment-timeline-cards", investmentTimeLineCardRouter);
 app.use("/api/v1/portfolio-cards", portfolioCardRouter);
 app.use("/api/v1/investment-timeline", investmentTimeLineRouter);

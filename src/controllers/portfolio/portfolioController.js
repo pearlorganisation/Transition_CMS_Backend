@@ -20,7 +20,7 @@ export const createPortfolio = asyncHandler(async (req, res, next) => {
   // Create portfolio record with uploaded images
   const portfolio = await Portfolio.create({
     ...req.body,
-    logo: uploadedLogo ? uploadedLogo[0] : null,
+    image: uploadedLogo ? uploadedLogo[0] : null,
     bg: uploadedBg ? uploadedBg[0] : null,
     bottomSectionIcon: uploadedBottomSectionIcon
       ? uploadedBottomSectionIcon[0]
