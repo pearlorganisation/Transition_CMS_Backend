@@ -12,16 +12,29 @@ const blogSchema = new mongoose.Schema({
      type:String
     },
     dateMetaData:{
-        type:String
+        type:String,
+        validate: {
+            validator: function () {
+                return !(this?.blogType == "PODCAST" && this?.dateMetaData);
+            },
+            message: "In Podcast,DateMetaData Should Not Be Provided"
+        },
+        trim:true
     },
     link:{
         type:String,
-        trim:true
+        trim:true,
     },
     blogType:{
         type:String,
         uppercase:true,
         trim:true,
+        validate: {
+            validator: function () {
+                return !(this?.blogType == "PODCAST" && this?.blogBody);
+            },
+            message: "In Podcast, only a link should be provided."
+        },
         required:[true,"Blog Type Is Required Field"],
         enum:['ARTICLES','PRESS','PODCAST']
     },
