@@ -36,7 +36,27 @@ export const createBlog = asyncHandler(async (req, res) => {
 // @route   GET /api/blogs
 // @access  Public
 export const getAllBlogs = asyncHandler(async (req, res) => {
-    const blogs = await BlogModel.find();
+
+       const {articles,press,podcast} = req.query;
+    
+       const filter = {};
+    
+       if(articles)
+       {
+          filter.blogType = "ARTICLES";
+       }
+       if(press)
+       {
+          filter.blogType = "PRESS";
+       }
+       if(podcast)
+       {
+          filter.blogType = "PODCAST";
+       }
+
+       console.log(filter);
+       
+    const blogs = await BlogModel.find({...filter});
     res.status(200).json({
         status: true,
         message: "Data Fetched successfully",
