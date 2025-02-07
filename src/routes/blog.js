@@ -9,9 +9,9 @@ router.route("/")
     .post(fileParser,createBlog)  // Create Blog
     .get(getAllBlogs); // Get All Blogs
 
-router.route("/:id")
+router.route("/:id").put(fileParser,updateBlog)
     .get(getBlogById)   // Get Blog by ID
-    .put(updateBlog)    // Update Blog
+         // Update Blog
     .delete(deleteBlog); // Delete Blog
 
 export const blogRouter =  router;

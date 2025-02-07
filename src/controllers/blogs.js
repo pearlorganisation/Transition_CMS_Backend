@@ -86,7 +86,7 @@ export const getBlogById = asyncHandler(async (req, res) => {
 // @access  Public
 export const updateBlog = asyncHandler(async (req, res) => {
     const blog = await BlogModel.findById(req.params.id);
-
+    console.log("the requested body is", req.body)
     if (!blog) {
         res.status(404).json({status:true,message:"Blog updated successfully"});
     }
