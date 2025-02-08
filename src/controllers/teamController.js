@@ -9,19 +9,20 @@ import { asyncHandler } from "../utils/errors/asyncHandler.js";
 import { paginate } from "../utils/pagination.js";
 
 export const getAllTeams = asyncHandler(async (req, res, next) => {
-  const page = parseInt(req.query.page || "1");
-  const limit = parseInt(req.query.limit || "10");
+  // const page = parseInt(req.query.page || "1");
+  // const limit = parseInt(req.query.limit || "10");
 
   // Use the pagination utility function
-  const { data: teams, pagination } = await paginate(
-    Team, // Model
-    page, // Current page
-    limit // Limit per page
-    // [], // No population needed
-    // {}, // No filters
-    // "" // No fields to exclude or select
-  );
+  // const { data: teams, pagination } = await paginate(
+  //   Team, // Model
+  //   page, // Current page
+  //   limit // Limit per page
+  //   // [], // No population needed
+  //   // {}, // No filters
+  //   // "" // No fields to exclude or select
+  // );
 
+  const teams = await Team.find()
   // Check if no obituaries are found
   if (!teams || teams.length === 0) {
     return next(new ApiErrorResponse("No Teams found", 404));
@@ -31,7 +32,8 @@ export const getAllTeams = asyncHandler(async (req, res, next) => {
   return res.status(200).json({
     success: true,
     message: "All teams found successfully",
-    pagination, // Include pagination metadata
+    // pagination, // Include pagination metadata
+    length:teams.length,
     data: teams,
   });
 });

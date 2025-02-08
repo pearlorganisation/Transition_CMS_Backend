@@ -48,6 +48,8 @@ import portfolioCardRouter from "./src/routes/portfolio/portfolioCardRoute.js";
 import investmentTimeLineRouter from "./src/routes/portfolio/investmentTimelineRoute.js";
 import portfolioRouter from "./src/routes/portfolio/portfolioRoute.js";
 import { errorHandler, notFound } from "./src/utils/errors/errorHandler.js";
+import { blogRouter } from "./src/routes/blog.js";
+import { impactRouter } from "./src/routes/impactRoutes.js";
 
 app.get("/", (req, res) => {
   res.status(200).send("API Works!");
@@ -61,11 +63,13 @@ app.use("/api/v1/focusarea", focusAreaRouter);
 app.use("/api/v1/focus-features", focusFeatureRouter);
 app.use("/api/v1/articles", articleRouter);
 app.use("/api/v1/podcast", podcastRouter);
-app.use("/api/v1/co-investors", coInvestorRouter);
+app.use("/api/v1/co-investors", coInvestorRouter); // for admin
 app.use("/api/v1/investment-timeline-cards", investmentTimeLineCardRouter);
 app.use("/api/v1/portfolio-cards", portfolioCardRouter);
 app.use("/api/v1/investment-timeline", investmentTimeLineRouter);
 app.use("/api/v1/portfolio", portfolioRouter);
+app.use("/api/v1/blogs",blogRouter);
+app.use("/api/v1/impact",impactRouter);
 
 app.use(notFound);
 app.use(errorHandler);

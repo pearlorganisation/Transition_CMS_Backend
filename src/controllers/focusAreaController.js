@@ -14,20 +14,21 @@ export const getFocusAreas = asyncHandler(async (req, res, next) => {
   const limit = parseInt(req.query.limit || "10");
 
   // Use the pagination utility function
-  const { data: focusAreas, pagination } = await paginate(
-    FocusArea, // Model
-    page, // Current page
-    limit,
-    [
-      // Limit per page
-      // [], // No population needed
-      { path: "focusAreas" },
-    ] // No filters
-    // {}, // No filters
-    // "" // No fields to exclude or select
-  );
+//   const { data: focusAreas, pagination } = await paginate(
+//     FocusArea, // Model
+//     page, // Current page
+//     limit,
+//     [
+//       // Limit per page
+//       // [], // No population needed
+//       { path: "focusAreas" },
+//     ] // No filters
+//     // {}, // No filters
+//     // "" // No fields to exclude or select
+//   );
 
   // Check if no obituaries are found
+  const focusAreas = await FocusArea.find().populate("focusAreas")
   if (!focusAreas || focusAreas.length === 0) {
     return next(new ApiErrorResponse("No Focus Areas found", 404));
   }
@@ -36,7 +37,7 @@ export const getFocusAreas = asyncHandler(async (req, res, next) => {
   return res.status(200).json({
     success: true,
     message: "All focus areas found successfully",
-    pagination, // Include pagination metadata
+    // pagination, // Include pagination metadata
     data: focusAreas,
   });
 });
