@@ -86,12 +86,24 @@ export const getBlogById = asyncHandler(async (req, res) => {
 // @access  Public
 export const updateBlog = asyncHandler(async (req, res) => {
     const blog = await BlogModel.findById(req.params.id);
-    console.log("the requested body is", req.body)
+    const {
+        icon
+    } = req.files;
     if (!blog) {
-        res.status(404).json({status:true,message:"Blog updated successfully"});
-    }
+          res.status(404).json({
+              status: true,
+              message: "Blog not found successfully"
+          });
+      }
+    if(icon){
+    const uploadedIcon = icon ? await uploadFileToCloudinary(icon) : null;
 
-    const updatedBlog = await BlogModel.findByIdAndUpdate(req.params.id, req.body, {
+    console.log("the requested body is", req.body)
+   
+
+    const updatedBlog = await BlogModel.findByIdAndUpdate(req.params.id, {...req.body,
+        icon: uploadedIcon?uploadedIcon?.[0] : null
+    }, {
         new: true,
         runValidators: true
     });
@@ -100,7 +112,19 @@ export const updateBlog = asyncHandler(async (req, res) => {
         status: true,
         message: "Blog updated successfully",
         data:updatedBlog
-    });
+    });}else{
+            const updatedBlog = await BlogModel.findByIdAndUpdate(req.params.id,req.body, {
+                new: true,
+                runValidators: true
+            });
+
+            res.status(200).json({
+                status: true,
+                message: "Blog updated successfully",
+                data: updatedBlog
+            });
+    }
+
 });
 
 // @desc    Delete a blog
