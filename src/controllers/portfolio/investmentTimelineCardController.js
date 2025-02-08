@@ -94,10 +94,8 @@ export const updateInvestmentTimelineCardById = asyncHandler(
     const { icon } = req.files;
     const uploadedIcon = icon ? await uploadFileToCloudinary(icon) : undefined;
 
-    if (uploadedIcon) {
-      if (investmentTimelineCard.icon) {
-        await deleteFileFromCloudinary(investmentTimelineCard.icon);
-      }
+    if (uploadedIcon?.[0] && investmentTimelineCard?.icon) {
+      await deleteFileFromCloudinary(investmentTimelineCard.icon);
     }
 
     const updatedInvestmentTimelineCard =

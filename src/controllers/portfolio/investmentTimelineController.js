@@ -85,7 +85,7 @@ export const updateInvestmentTimelineById = asyncHandler(
       ? await uploadFileToCloudinary(image)
       : undefined;
 
-    if (uploadedImage && investmentTimeline.image) {
+    if (uploadedImage?.[0] && investmentTimeline?.image) {
       await deleteFileFromCloudinary(investmentTimeline.image);
     }
 

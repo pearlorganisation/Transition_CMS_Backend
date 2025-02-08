@@ -79,7 +79,7 @@ export const updatePortfolioCardById = asyncHandler(async (req, res, next) => {
   const { icon } = req.files;
   const uploadedIcon = icon ? await uploadFileToCloudinary(icon) : undefined;
 
-  if (uploadedIcon && portfolioCard.icon) {
+  if (uploadedIcon?.[0] && portfolioCard?.icon) {
     await deleteFileFromCloudinary(portfolioCard.icon);
   }
 

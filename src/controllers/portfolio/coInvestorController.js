@@ -56,11 +56,11 @@ export const updateCoInvestorById = asyncHandler(async (req, res, next) => {
   }
   const { logo } = req.files;
   const uploadedLogo = logo ? await uploadFileToCloudinary(logo) : undefined;
-  if (uploadedLogo) {
-    if (coInvestor.logo) {
-      await deleteFileFromCloudinary(coInvestor.logo);
-    }
+
+  if (uploadedLogo?.[0] && coInvestor.logo) {
+    await deleteFileFromCloudinary(coInvestor.logo);
   }
+
   const updatedCoInvestor = await CoInvestor.findByIdAndUpdate(
     req.params.id,
     {
