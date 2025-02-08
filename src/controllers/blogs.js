@@ -3,7 +3,7 @@
 // @route   POST /api/blogs
 
 import { BlogModel } from "../models/blogs.js";
-import { uploadFileToCloudinary } from "../utils/cloudinaryConfig.js";
+import { deleteFileFromCloudinary, uploadFileToCloudinary } from "../utils/cloudinaryConfig.js";
 import { asyncHandler } from "../utils/errors/asyncHandler.js";
 
 // @access  Public
@@ -85,7 +85,18 @@ export const getBlogById = asyncHandler(async (req, res) => {
 // @route   PUT /api/blogs/:id
 // @access  Public
 export const updateBlog = asyncHandler(async (req, res) => {
+    console.log("the body is", req.body)
     const blog = await BlogModel.findById(req.params.id);
+    const {
+        title,
+        blogBody,
+        shortTitle,
+        dateMetaData,
+        link,
+        blogType,
+
+    } = req.body
+
     const {
         icon
     } = req.files;
@@ -95,37 +106,70 @@ export const updateBlog = asyncHandler(async (req, res) => {
               message: "Blog not found successfully"
           });
       }
-    if(icon){
-    const uploadedIcon = icon ? await uploadFileToCloudinary(icon) : null;
+    // if(icon){
+    // const uploadedIcon = icon ? await uploadFileToCloudinary(icon) : null;
+    // await deleteFileFromCloudinary(blog.icon) // utility function to delete the icon 
 
-    console.log("the requested body is", req.body)
+    // console.log("the requested body is", req.body)
    
 
-    const updatedBlog = await BlogModel.findByIdAndUpdate(req.params.id, {...req.body,
-        icon: uploadedIcon?uploadedIcon?.[0] : null
-    }, {
-        new: true,
-        runValidators: true
-    });
+    // const updatedBlog = await BlogModel.findByIdAndUpdate(req.params.id, {...req.body,
+    //     icon: uploadedIcon?uploadedIcon?.[0] : null
+    // }, {
+    //     new: true,
+    //     runValidators: true
+    // });
 
-    res.status(200).json({
-        status: true,
-        message: "Blog updated successfully",
-        data:updatedBlog
-    });}else{
-            const updatedBlog = await BlogModel.findByIdAndUpdate(req.params.id,req.body, {
-                new: true,
-                runValidators: true
+    // res.status(200).json({
+    //     status: true,
+    //     message: "Blog updated successfully",
+    //     data:updatedBlog
+    // });}else{
+    //         const updatedBlog = await BlogModel.findByIdAndUpdate(req.params.id,req.body, {
+    //             new: true,
+    //             runValidators: true
+    //         });
+
+    //         res.status(200).json({
+    //             status: true,
+    //             message: "Blog updated successfully",
+    //             data: updatedBlog
+    //         });
+    // }
+
+
+    // const payload ={};
+    if(icon){
+      await deleteFileFromCloudinary(blog?.icon) // first deleting the previous image
+      const upload = await uploadFileToCloudinary(icon)
+     //payload.icon = upload[0]
+      blog.icon = upload?.[0];
+    };
+    if(title){
+        blog.title = title
+    };
+    if(blogBody){
+        blog.blogBody= blogBody
+    };
+    if(shortTitle){
+        blog.shortTitle = shortTitle
+    };
+    if(dateMetaData){
+        blog.dateMetaData = dateMetaData
+    };
+    if(link){
+        blog.link = link
+    };
+    if(blogType){
+        blog.blogType = blogType;
+    };
+    await blog.save({ runValidators: false })
+    return res.status(200).json({
+                    status: true,
+                    message: "Blog updated successfully",
+                    data:blog
+                });
             });
-
-            res.status(200).json({
-                status: true,
-                message: "Blog updated successfully",
-                data: updatedBlog
-            });
-    }
-
-});
 
 // @desc    Delete a blog
 // @route   DELETE /api/blogs/:id
