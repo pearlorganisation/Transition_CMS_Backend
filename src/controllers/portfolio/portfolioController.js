@@ -7,10 +7,10 @@ import ApiErrorResponse from "../../utils/errors/ApiErrorResponse.js";
 import { asyncHandler } from "../../utils/errors/asyncHandler.js";
 
 export const createPortfolio = asyncHandler(async (req, res, next) => {
-  const { logo, bottomSectionIcon, bg } = req.files || {};
+  const { image, bottomSectionIcon, bg } = req.files || {};
 
   // Upload images to Cloudinary if they exist
-  const uploadedLogo = logo ? await uploadFileToCloudinary(logo) : null;
+  const uploadedImage = image ? await uploadFileToCloudinary(image) : null;
   const uploadedBg = bg ? await uploadFileToCloudinary(bg) : null;
 
   const uploadedBottomSectionIcon = bottomSectionIcon
@@ -20,7 +20,7 @@ export const createPortfolio = asyncHandler(async (req, res, next) => {
   // Create portfolio record with uploaded images
   const portfolio = await Portfolio.create({
     ...req.body,
-    logo: uploadedLogo ? uploadedLogo[0] : null,
+    image: uploadedImage ? uploadedImage[0] : null,
     bg: uploadedBg ? uploadedBg[0] : null,
     bottomSectionIcon: uploadedBottomSectionIcon
       ? uploadedBottomSectionIcon[0]
@@ -102,17 +102,17 @@ export const updatePortfolioById = asyncHandler(async (req, res, next) => {
     return next(new ApiErrorResponse("Portfolio not found", 404));
   }
 
-  const { logo, bg, bottomSectionIcon } = req.files || {};
+  const { image, bg, bottomSectionIcon } = req.files || {};
 
-  const uploadedLogo = logo ? await uploadFileToCloudinary(logo) : undefined;
+  const uploadedImage = image ? await uploadFileToCloudinary(image) : undefined;
   const uploadedBg = bg ? await uploadFileToCloudinary(bg) : undefined;
   const uploadedBottomSectionIcon = bottomSectionIcon
     ? await uploadFileToCloudinary(bottomSectionIcon)
     : undefined;
 
-  if (uploadedLogo) {
-    if (portfolio.logo) {
-      await deleteFileFromCloudinary(portfolio.logo);
+  if (uploadedImage) {
+    if (portfolio.image) {
+      await deleteFileFromCloudinary(portfolio.image);
     }
   }
   if (uploadedBg) {
@@ -129,7 +129,7 @@ export const updatePortfolioById = asyncHandler(async (req, res, next) => {
     id,
     {
       ...req.body,
-      logo: uploadedLogo ? uploadedLogo[0] : undefined,
+      image: uploadedImage ? uploadedImage[0] : undefined,
       bg: uploadedBg ? uploadedBg[0] : undefined,
       bottomSectionIcon: uploadedBottomSectionIcon
         ? uploadedBottomSectionIcon[0]
@@ -158,8 +158,8 @@ export const deletePortfolioById = asyncHandler(async (req, res, next) => {
   if (!portfolio) {
     return next(new ApiErrorResponse("Portfolio not found", 404));
   }
-  if (portfolio.logo) {
-    await deleteFileFromCloudinary(portfolio.logo);
+  if (portfolio.image) {
+    await deleteFileFromCloudinary(portfolio.image);
   }
   if (portfolio.bg) {
     await deleteFileFromCloudinary(portfolio.bg);
