@@ -37,6 +37,7 @@ app.use(morgan("dev"));
 
 //Routes imports
 import teamRouter from "./src/routes/teamsRoute.js";
+import teamDetailsRouter from "./src/routes/teamDetailsRoute.js";
 import newsRouter from "./src/routes/newsRoute.js";
 import articleRouter from "./src/routes/articleRoute.js";
 import podcastRouter from "./src/routes/podcastRoute.js";
@@ -58,6 +59,7 @@ app.get("/", (req, res) => {
 
 // Routes declaration
 app.use("/api/v1/teams", teamRouter);
+app.use("/api/v1/team-details", teamDetailsRouter);
 app.use("/api/v1/news", newsRouter);
 app.use("/api/v1/focusarea", focusAreaRouter);
 app.use("/api/v1/focus-features", focusFeatureRouter);
@@ -68,8 +70,8 @@ app.use("/api/v1/investment-timeline-cards", investmentTimeLineCardRouter);
 app.use("/api/v1/portfolio-cards", portfolioCardRouter);
 app.use("/api/v1/investment-timeline", investmentTimeLineRouter);
 app.use("/api/v1/portfolio", portfolioRouter);
-app.use("/api/v1/blogs",blogRouter);
-app.use("/api/v1/impact",impactRouter);
+app.use("/api/v1/blogs", blogRouter);
+app.use("/api/v1/impact", impactRouter);
 
 app.use(notFound);
 app.use(errorHandler);
