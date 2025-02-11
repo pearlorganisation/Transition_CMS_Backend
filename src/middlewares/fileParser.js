@@ -9,6 +9,7 @@ const fileParser = (req, res, next) => {
       return next(err);
     }
     req.body = req.body || {};
+    console.log("body:---", req.body);
 
     for (const key in fields) {
       if (fields[key]) {
@@ -27,7 +28,7 @@ const fileParser = (req, res, next) => {
     }
 
     req.files = req.files || {};
-
+    console.log("files: --", req.files);
     // Convert files to req.files
     for (const key in files) {
       const actualFiles = files[key];
