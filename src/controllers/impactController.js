@@ -46,7 +46,7 @@ export const getImpactById = asyncHandler(async (req, res, next) => {
   if (!impact) {
     return next(new ApiErrorResponse("Data not found", 404));
   }
-  res.status(200).json({ status: true, data: impacts ,message:"Data Fetched Successfully !!" });
+  res.status(200).json({ status: true, data: impact ,message:"Data Fetched Successfully !!" });
 });
 
 // @desc    Update Impact Data
