@@ -16,7 +16,7 @@ export const createImpact = asyncHandler(async (req, res, next) => {
       .json({ status: true, message: "Title and ImpactDataType is required fields." });
   }
 
-  const payload = {
+  const payload  = {
     ...req.body,
   };
 
@@ -46,27 +46,44 @@ export const getImpactById = asyncHandler(async (req, res, next) => {
   if (!impact) {
     return next(new ApiErrorResponse("Data not found", 404));
   }
-  res.status(200).json({ status: true, data: impacts ,message:"Data Fetched Successfully !!" });
+  res.status(200).json({ status: true, data: impact ,message:"Data Fetched Successfully !!" });
 });
 
 // @desc    Update Impact Data
 // @route   PUT /api/impact/:id
 // @access  Protected (if needed)
 export const updateImpact = asyncHandler(async (req, res, next) => {
-  const updatedImpact = await ImpactModel.findByIdAndUpdate(
-    req.params.id,
-    req.body,
+  console.log("first",req);
+const {
+  icon
+} = req.files;
+const uploadedIcon = icon ? await uploadFileToCloudinary(icon) : null;
+console.log("the uploaded icon is", uploadedIcon?.[0])
+  const payload = {
+    ...req.body,
+  };
+console.log("the payload after spreading is", payload)
+  if (uploadedIcon) {
+    payload.icon = uploadedIcon?.[0];
+  }
+
+  const updatedImpactData = await ImpactModel.findOneAndUpdate(
+    {_id:req.params.id},
+    {...payload},
     {
       new: true,
-      runValidators: true,
+      runValidators: false,
     }
   );
 
-  if (!updatedImpact) {
+  if (!updatedImpactData) {
     return next(new ApiErrorResponse("Impact data not found", 404));
   }
 
-  res.status(200).json({ success: true, data: updatedImpact });
+  res.status(200).json({
+    success: true,
+    data: updatedImpactData
+  });
 });
 
 // @desc    Delete Impact Data

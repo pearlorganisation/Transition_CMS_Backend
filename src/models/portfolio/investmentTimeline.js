@@ -10,7 +10,13 @@ const investmentTimelineSchema = new mongoose.Schema(
       public_id: { type: String, required: true },
     },
     cards: [
-      { type: mongoose.Schema.Types.ObjectId, ref: "InvestmentTimelineCard" },
+      {
+        _id: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "InvestmentTimelineCard",
+        },
+        body: { type: String, required: true },
+      },
     ],
   },
   { timestamps: true }

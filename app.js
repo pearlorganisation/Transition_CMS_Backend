@@ -15,8 +15,9 @@ app.set("views", path.resolve("./views"));
 dontenv.config();
 
 // Middlewares
-app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 app.use(
   cors({
     origin:
@@ -26,7 +27,8 @@ app.use(
             "http://localhost:5174",
             "http://localhost:3000",
           ]
-        : ["https://cele.vercel.app"],
+        : ["https://transition-cms-frontend-2.vercel.app", "https://cms-admin-beta.vercel.app"
+        ],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"], // Specify allowed methods
     // credentials: true,
   })
@@ -37,6 +39,7 @@ app.use(morgan("dev"));
 
 //Routes imports
 import teamRouter from "./src/routes/teamsRoute.js";
+import teamDetailsRouter from "./src/routes/teamDetailsRoute.js";
 import newsRouter from "./src/routes/newsRoute.js";
 import articleRouter from "./src/routes/articleRoute.js";
 import podcastRouter from "./src/routes/podcastRoute.js";
@@ -59,6 +62,7 @@ app.get("/", (req, res) => {
 
 // Routes declaration
 app.use("/api/v1/teams", teamRouter);
+app.use("/api/v1/team-details", teamDetailsRouter);
 app.use("/api/v1/news", newsRouter);
 app.use("/api/v1/focusarea", focusAreaRouter);
 app.use("/api/v1/focus-features", focusFeatureRouter);
@@ -69,8 +73,9 @@ app.use("/api/v1/investment-timeline-cards", investmentTimeLineCardRouter);
 app.use("/api/v1/portfolio-cards", portfolioCardRouter);
 app.use("/api/v1/investment-timeline", investmentTimeLineRouter);
 app.use("/api/v1/portfolio", portfolioRouter);
-app.use("/api/v1/blogs", blogRouter);
-app.use("/api/v1/impact", impactRouter);
+app.use("/api/v1/blogs",  blogRouter);
+app.use("/api/v1/impact",  impactRouter);
+// app.use("/api/v1/page", pageRouter);
 app.use("/api/v1/contact-us-page", contactUsPageRouter);
 
 app.use(notFound);
