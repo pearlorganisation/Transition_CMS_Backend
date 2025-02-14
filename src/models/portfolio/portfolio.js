@@ -18,17 +18,37 @@ const PortfolioSchema = new mongoose.Schema(
     investmentTimeline: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "InvestmentTimeline",
+      required: true,
     },
     overview: { type: String, required: true },
     mainDescription: { type: String, required: true },
-    cards: [{ type: mongoose.Schema.Types.ObjectId, ref: "PortfolioCard" }],
+    cards: [
+      {
+        _id: {
+          type: mongoose.Schema.Types.ObjectId,
+          required: true,
+          ref: "PortfolioCard",
+        },
+        portfoliocardname: { type: String, required: true },
+      },
+    ],
+    coInvestedBy: [
+      {
+        _id: {
+          type: mongoose.Schema.Types.ObjectId,
+          required: true,
+          ref: "CoInvestor",
+        },
+        coInvestorname: { type: String, required: true },
+      },
+    ],
+
     bottomSectionIcon: {
       asset_id: { type: String, required: true },
       secure_url: { type: String, required: true },
       public_id: { type: String, required: true },
     },
     bottomSectionContent: { type: String, required: true },
-    coInvestedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "CoInvestor" }],
   },
   { timestamps: true }
 );
