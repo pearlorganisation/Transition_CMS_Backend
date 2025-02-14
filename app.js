@@ -26,7 +26,8 @@ app.use(
             "http://localhost:5174",
             "http://localhost:3000",
           ]
-        : ["https://cele.vercel.app"],
+        : ["https://cele.vercel.app",
+        ],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"], // Specify allowed methods
     // credentials: true,
   })

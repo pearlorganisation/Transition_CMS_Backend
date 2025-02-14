@@ -28,7 +28,7 @@ export const getFocusAreas = asyncHandler(async (req, res, next) => {
 //   );
 
   // Check if no obituaries are found
-  const focusAreas = await FocusArea.find().populate("focusAreas")
+  const focusAreas = await FocusArea.find().populate("focusAreas._id").lean()
   if (!focusAreas || focusAreas.length === 0) {
     return next(new ApiErrorResponse("No Focus Areas found", 404));
   }
