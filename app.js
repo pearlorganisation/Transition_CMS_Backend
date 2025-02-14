@@ -27,7 +27,7 @@ app.use(
             "http://localhost:5174",
             "http://localhost:3000",
           ]
-        : ["https://transition-cms-frontend-2.vercel.app", "https://cms-admin-beta.vercel.app"
+        : ["https://transition-cms-frontend-2.vercel.app", "https://cms-admin-2.vercel.app"
         ],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"], // Specify allowed methods
     // credentials: true,
