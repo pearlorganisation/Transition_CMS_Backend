@@ -27,7 +27,7 @@ app.use(
             "http://localhost:5174",
             "http://localhost:3000",
           ]
-        : ["https://transition-cms-frontend-2.vercel.app", "https://cms-admin-2.vercel.app","https://cms-4-one.vercel.app","https://cms-3-git-main-manishgupta-pearlorganis-projects.vercel.app","https://cms-3-ebon.vercel.app"
+        : ["https://transition-cms-frontend.vercel.app", "https://cms-admin-2.vercel.app","https://cms-4-one.vercel.app","https://cms-3-git-main-manishgupta-pearlorganis-projects.vercel.app","https://cms-3-ebon.vercel.app"
         ],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"], // Specify allowed methods
     // credentials: true,
