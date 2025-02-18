@@ -88,7 +88,8 @@ export const getBlogById = asyncHandler(async (req, res) => {
 export const updateBlog = asyncHandler(async (req, res) => {
   console.log("the body is", req.body);
   const blog = await BlogModel.findById(req.params.id);
-  const { title, blogBody, shortTitle, link, blogType } = req.body;
+  const { title, blogBody, shortTitle, link, blogType, dateMetaData } =
+    req.body;
 
   const { icon } = req.files;
   if (!blog) {
@@ -149,6 +150,9 @@ export const updateBlog = asyncHandler(async (req, res) => {
   }
   if (blogType) {
     blog.blogType = blogType;
+  }
+  if (dateMetaData) {
+    blog.dateMetaData = dateMetaData;
   }
   await blog.save({ runValidators: false });
   return res.status(200).json({
