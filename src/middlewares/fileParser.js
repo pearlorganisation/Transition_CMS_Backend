@@ -1,6 +1,7 @@
 import formidable from "formidable";
 
 const fileParser = (req, res, next) => {
+  // console.log("req: ", req);
   const form = formidable();
 
   form.parse(req, (err, fields, files) => {
@@ -8,8 +9,11 @@ const fileParser = (req, res, next) => {
       console.error("Error parsing the files", err);
       return next(err);
     }
-    req.body = req.body || {};
 
+    req.body = req.body || {};
+    // console.log("body 1", req.body);
+    // console.log("fileds", fields);
+    // console.log("files", files);
     for (const key in fields) {
       if (fields[key]) {
         const value = fields[key][0];
@@ -33,9 +37,9 @@ const fileParser = (req, res, next) => {
         }
       }
     }
-
+    // console.log("body-----------", req.body);
     req.files = req.files || {};
-
+    // console.log("files: --", req.files);
     // Convert files to req.files
     for (const key in files) {
       const actualFiles = files[key];

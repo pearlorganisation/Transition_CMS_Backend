@@ -11,7 +11,7 @@ router.route("/")
 
 router.route("/:id")
     .get(getImpactById)   // Get Single Impact Data by ID
-    .put(updateImpact)    // Update Impact Data
+    .put(fileParser,updateImpact)    // Update Impact Data
     .delete(deleteImpact);// Delete Impact Data
 
 export const impactRouter =  router;

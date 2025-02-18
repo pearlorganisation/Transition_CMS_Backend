@@ -16,7 +16,6 @@ router
   .route("/:id")
   .get(getSingleTeamDetails)
   .delete(deleteTeamDetails)
-
   .patch(fileParser, updateTeamDetails);
 
 export default router;
