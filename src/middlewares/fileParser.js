@@ -20,7 +20,15 @@ const fileParser = (req, res, next) => {
           req.body[key] = value;
         }
 
-        if (!isNaN(req.body[key])) {
+        // if (!isNaN(req.body[key])) {
+        //   req.body[key] = Number(req.body[key]);
+        // }
+
+        if (
+          typeof req.body[key] === "string" &&
+          !isNaN(req.body[key]) &&
+          req.body[key].trim() !== ""
+        ) {
           req.body[key] = Number(req.body[key]);
         }
       }
