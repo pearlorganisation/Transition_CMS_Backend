@@ -7,42 +7,38 @@ import ApiErrorResponse from "../../utils/errors/ApiErrorResponse.js";
 import { asyncHandler } from "../../utils/errors/asyncHandler.js";
 
 export const createPortfolio = asyncHandler(async (req, res, next) => {
-  try {
-    console.log(req.body, "Body 1234");
-    const { image, bottomSectionIcon, bg } = req.files || {};
-    const { cards, coInvestedBy, ...otherData } = req.body;
+  const { image, bottomSectionIcon, bg } = req.files || {};
+  const { cards, coInvestedBy, ...otherData } = req.body;
 
-    // Upload images to Cloudinary if they exist
-    const uploadedImage = image ? await uploadFileToCloudinary(image) : null;
-    const uploadedBg = bg ? await uploadFileToCloudinary(bg) : null;
-    const uploadedBottomSectionIcon = bottomSectionIcon
-      ? await uploadFileToCloudinary(bottomSectionIcon)
-      : null;
+  // console.log("body", req.body);
 
-    const portfolio = await Portfolio.create({
-      ...otherData,
-      cards,
-      coInvestedBy,
-      image: uploadedImage ? uploadedImage[0] : null,
-      bg: uploadedBg ? uploadedBg[0] : null,
-      bottomSectionIcon: uploadedBottomSectionIcon
-        ? uploadedBottomSectionIcon[0]
-        : null,
-    });
+  // Upload images to Cloudinary if they exist
+  const uploadedImage = image ? await uploadFileToCloudinary(image) : null;
+  const uploadedBg = bg ? await uploadFileToCloudinary(bg) : null;
+  const uploadedBottomSectionIcon = bottomSectionIcon
+    ? await uploadFileToCloudinary(bottomSectionIcon)
+    : null;
 
-    if (!portfolio) {
-      return next(new ApiErrorResponse("Portfolio creation failed", 400));
-    }
+  const portfolio = await Portfolio.create({
+    ...otherData,
+    cards,
+    coInvestedBy,
+    image: uploadedImage ? uploadedImage[0] : null,
+    bg: uploadedBg ? uploadedBg[0] : null,
+    bottomSectionIcon: uploadedBottomSectionIcon
+      ? uploadedBottomSectionIcon[0]
+      : null,
+  });
 
-    return res.status(201).json({
-      success: true,
-      message: "Portfolio created successfully",
-      data: portfolio,
-    });
-  } catch (error) {
-    console.error("Error creating portfolio:", error);
-    return next(new ApiErrorResponse("Portfolio creation failed", 500));
+  if (!portfolio) {
+    return next(new ApiErrorResponse("Portfolio creation failed", 400));
   }
+
+  return res.status(201).json({
+    success: true,
+    message: "Portfolio created successfully",
+    data: portfolio,
+  });
 });
 
 export const getPortfolioById = asyncHandler(async (req, res, next) => {

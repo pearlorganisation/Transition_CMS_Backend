@@ -36,10 +36,9 @@ const PortfolioSchema = new mongoose.Schema(
       {
         _id: {
           type: mongoose.Schema.Types.ObjectId,
-          required: true,
           ref: "CoInvestor",
         },
-        coInvestorname: { type: String, required: true },
+        coInvestorname: { type: String },
       },
     ],
 

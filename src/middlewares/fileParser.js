@@ -1,6 +1,7 @@
 import formidable from "formidable";
 
 const fileParser = (req, res, next) => {
+  // console.log("req: ", req);
   const form = formidable();
 
   form.parse(req, (err, fields, files) => {
@@ -8,9 +9,11 @@ const fileParser = (req, res, next) => {
       console.error("Error parsing the files", err);
       return next(err);
     }
-    req.body = req.body || {};
-    console.log("body:---", req.body);
 
+    req.body = req.body || {};
+    // console.log("body 1", req.body);
+    // console.log("fileds", fields);
+    // console.log("files", files);
     for (const key in fields) {
       if (fields[key]) {
         const value = fields[key][0];
@@ -20,15 +23,24 @@ const fileParser = (req, res, next) => {
         } catch (e) {
           req.body[key] = value;
         }
-
-        if (!isNaN(req.body[key])) {
+        console.log("body-----------", req.body);
+        // if (!isNaN(req.body[key])) {
+        //   console.log("req body key", req.body[key]);
+        //   req.body[key] = Number(req.body[key]);
+        // }
+        if (
+          typeof req.body[key] === "string" &&
+          !isNaN(req.body[key]) &&
+          req.body[key].trim() !== ""
+        ) {
+          console.log("req body key", req.body[key]);
           req.body[key] = Number(req.body[key]);
         }
       }
     }
-
+    // console.log("body-----------", req.body);
     req.files = req.files || {};
-    console.log("files: --", req.files);
+    // console.log("files: --", req.files);
     // Convert files to req.files
     for (const key in files) {
       const actualFiles = files[key];

@@ -75,7 +75,6 @@ app.use("/api/v1/investment-timeline", investmentTimeLineRouter);
 app.use("/api/v1/portfolio", portfolioRouter);
 app.use("/api/v1/blogs",  blogRouter);
 app.use("/api/v1/impact",  impactRouter);
-// app.use("/api/v1/page", pageRouter);
 app.use("/api/v1/contact-us-page", contactUsPageRouter);
 
 app.use(notFound);
