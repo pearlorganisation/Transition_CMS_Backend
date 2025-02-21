@@ -28,8 +28,15 @@ app.use(
             "http://localhost:3000",
           ]
         : [
-            "https://transition-cms-frontend-2.vercel.app",
-            "https://cms-admin-beta.vercel.app",
+            "https://transition-cms-frontend.vercel.app",
+            "https://www.transitionventurecapital.com/",
+            "http://localhost:3000",
+            "https://transitionventurecapital.com",
+            "https://admin.transitionventurecapital.com",
+            "https://cms-admin-2.vercel.app",
+            "https://cms-4-one.vercel.app",
+            "https://cms-3-git-main-manishgupta-pearlorganis-projects.vercel.app",
+            "https://cms-3-ebon.vercel.app",
           ],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"], // Specify allowed methods
     // credentials: true,
@@ -58,6 +65,7 @@ import { impactRouter } from "./src/routes/impactRoutes.js";
 import contactUsPageRouter from "./src/routes/page/contactUsPageRoute.js";
 import userRouter from "./src/routes/userRoutes.js";
 import authRouter from "./src/routes/authRoute.js";
+
 app.get("/", (req, res) => {
   res.status(200).send("API Works!");
   console.log("This is Home route");
