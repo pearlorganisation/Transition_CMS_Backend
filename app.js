@@ -27,8 +27,10 @@ app.use(
             "http://localhost:5174",
             "http://localhost:3000",
           ]
-        : ["https://transition-cms-frontend-2.vercel.app", "https://cms-admin-beta.vercel.app"
-        ],
+        : [
+            "https://transition-cms-frontend-2.vercel.app",
+            "https://cms-admin-beta.vercel.app",
+          ],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"], // Specify allowed methods
     // credentials: true,
   })
@@ -54,6 +56,7 @@ import { errorHandler, notFound } from "./src/utils/errors/errorHandler.js";
 import { blogRouter } from "./src/routes/blog.js";
 import { impactRouter } from "./src/routes/impactRoutes.js";
 import contactUsPageRouter from "./src/routes/page/contactUsPageRoute.js";
+import userRouter from "./src/routes/authRoute.js";
 
 app.get("/", (req, res) => {
   res.status(200).send("API Works!");
@@ -68,14 +71,16 @@ app.use("/api/v1/focusarea", focusAreaRouter);
 app.use("/api/v1/focus-features", focusFeatureRouter);
 app.use("/api/v1/articles", articleRouter);
 app.use("/api/v1/podcast", podcastRouter);
-app.use("/api/v1/co-investors", coInvestorRouter); // for admin
+app.use("/api/v1/co-investors", coInvestorRouter);
 app.use("/api/v1/investment-timeline-cards", investmentTimeLineCardRouter);
 app.use("/api/v1/portfolio-cards", portfolioCardRouter);
 app.use("/api/v1/investment-timeline", investmentTimeLineRouter);
 app.use("/api/v1/portfolio", portfolioRouter);
-app.use("/api/v1/blogs",  blogRouter);
-app.use("/api/v1/impact",  impactRouter);
+app.use("/api/v1/blogs", blogRouter);
+app.use("/api/v1/impact", impactRouter);
 app.use("/api/v1/contact-us-page", contactUsPageRouter);
+
+app.use("/api/v1/auth", userRouter);
 
 app.use(notFound);
 app.use(errorHandler);
