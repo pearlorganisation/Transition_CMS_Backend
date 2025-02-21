@@ -1,5 +1,4 @@
 import dotenv from "dotenv";
-
 import jwt from "jsonwebtoken";
 import User from "../models/user.js";
 import { asyncHandler } from "../utils/errors/asyncHandler.js";
@@ -53,7 +52,7 @@ export const login = asyncHandler(async (req, res) => {
   }
 
   // Checking Admin Login
-  if (user.role !== "admin") {
+  if (user.role !== "ADMIN") {
     return res
       .status(403)
       .json({ message: "Access denied. Only admins can log in." });
@@ -70,55 +69,14 @@ export const login = asyncHandler(async (req, res) => {
     httpOnly: true,
     secure: (process.env.NODE_ENV = "production"),
     sameSite: "lax",
-    maxAge: 1 * 1 * 60 * 1000,
+    maxAge: 30 * 24 * 60 * 60 * 1000, // 30days
   });
 
   const userData = {
     name: user.name,
     email: user.email,
-    phoneNumber: user.phoneNumber,
   };
   res.status(200).json({ message: "Login successfull", data: userData });
-});
-
-export const getUserProfile = asyncHandler(async (req, res) => {
-  console.log("Cookies received:", req.cookies);
-
-  const token =
-    req.cookies?.authToken ||
-    req.header("Authorization")?.replace("Bearer ", "");
-
-  console.log("Extracted Token:", token);
-
-  if (!token) {
-    return res
-      .status(401)
-      .json({ message: "Authentication token is required!" });
-  }
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log("Decoded Token:", decoded);
-
-    const user = await User.findById(decoded.userId).select("-password"); // Exclude password
-    if (!user) {
-      return res.status(404).json({ message: "User not found!" });
-    }
-
-    res.status(200).json({
-      message: "User profile fetched successfully!",
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        // Add more profile fields if necessary
-      },
-    });
-  } catch (error) {
-    console.error("Error verifying token:", error.message);
-    res.status(401).json({ message: "Invalid or expired token!" });
-  }
 });
 
 export const logout = asyncHandler(async (req, res) => {

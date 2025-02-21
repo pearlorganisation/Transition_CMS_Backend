@@ -56,8 +56,8 @@ import { errorHandler, notFound } from "./src/utils/errors/errorHandler.js";
 import { blogRouter } from "./src/routes/blog.js";
 import { impactRouter } from "./src/routes/impactRoutes.js";
 import contactUsPageRouter from "./src/routes/page/contactUsPageRoute.js";
-import userRouter from "./src/routes/authRoute.js";
-
+import userRouter from "./src/routes/userRoutes.js";
+import authRouter from "./src/routes/authRoute.js";
 app.get("/", (req, res) => {
   res.status(200).send("API Works!");
   console.log("This is Home route");
@@ -80,7 +80,8 @@ app.use("/api/v1/blogs", blogRouter);
 app.use("/api/v1/impact", impactRouter);
 app.use("/api/v1/contact-us-page", contactUsPageRouter);
 
-app.use("/api/v1/auth", userRouter);
+app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/users", userRouter);
 
 app.use(notFound);
 app.use(errorHandler);

@@ -62,6 +62,7 @@ export const verifyPermission = (roles = []) =>
     next();
   });
 
+
 export const checkAdmin = asyncHandler(async (req, res, next) => {
   if (!req.user) {
     return res.status(401).json({ message: "Unauthorized. User is missing!" });
