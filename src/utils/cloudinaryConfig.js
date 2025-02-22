@@ -14,7 +14,7 @@ export const uploadFileToCloudinary = async (files) => {
     const fileArray = Array.isArray(files) ? files : [files];
 
     const uploadPromises = fileArray.map((file) =>
-      cloudinary.uploader.upload(file.filepath)
+      cloudinary.uploader.upload(file.filepath, { folder: "Transition_VC" })
     );
 
     const uploadResults = await Promise.all(uploadPromises);
