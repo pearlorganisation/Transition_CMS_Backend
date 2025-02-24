@@ -7,35 +7,48 @@ import { asyncHandler } from "../utils/errors/asyncHandler.js";
 // @route   POST /api/impact
 // @access  Public or Protected (if needed)
 export const createImpact = asyncHandler(async (req, res, next) => {
-  const { title , impactDataType} = req.body;
+  const { title, impactDataType } = req.body;
   const { icon } = req.files;
   const uploadedIcon = icon ? await uploadFileToCloudinary(icon) : null;
-  if (!title||!impactDataType) {
+  if (!title || !impactDataType) {
     return res
       .status(400)
-      .json({ status: true, message: "Title and ImpactDataType is required fields." });
+      .json({
+        status: true,
+        message: "Title and ImpactDataType is required fields.",
+      });
   }
 
-  const payload  = {
+  const payload = {
     ...req.body,
   };
 
-  if(uploadedIcon)
-  {
+  if (uploadedIcon) {
     payload.icon = uploadedIcon?.[0];
   }
-  console.log("payload",payload)
-  const newImpact = await ImpactModel.create({...payload});
-  res.status(201).json({ status: true, data: newImpact, message:"Impact Data Created Successfully!!" });
+  console.log("payload", payload);
+  const newImpact = await ImpactModel.create({ ...payload });
+  res
+    .status(201)
+    .json({
+      status: true,
+      data: newImpact,
+      message: "Impact Data Created Successfully!!",
+    });
 });
 
 // @desc    Get All Impact Data
 // @route   GET /api/impact
 // @access  Public
 export const getAllImpact = asyncHandler(async (req, res, next) => {
-  
   const impacts = await ImpactModel.find();
-  res.status(200).json({ status: true, data: impacts ,message:"Data Fetched Successfully !!" });
+  res
+    .status(200)
+    .json({
+      status: true,
+      data: impacts,
+      message: "Data Fetched Successfully !!",
+    });
 });
 
 // @desc    Get Impact Data by ID
@@ -46,30 +59,34 @@ export const getImpactById = asyncHandler(async (req, res, next) => {
   if (!impact) {
     return next(new ApiErrorResponse("Data not found", 404));
   }
-  res.status(200).json({ status: true, data: impact ,message:"Data Fetched Successfully !!" });
+  res
+    .status(200)
+    .json({
+      status: true,
+      data: impact,
+      message: "Data Fetched Successfully !!",
+    });
 });
 
 // @desc    Update Impact Data
 // @route   PUT /api/impact/:id
 // @access  Protected (if needed)
 export const updateImpact = asyncHandler(async (req, res, next) => {
-  console.log("first",req);
-const {
-  icon
-} = req.files;
-const uploadedIcon = icon ? await uploadFileToCloudinary(icon) : null;
-console.log("the uploaded icon is", uploadedIcon?.[0])
+  console.log("first", req);
+  const { icon } = req.files;
+  const uploadedIcon = icon ? await uploadFileToCloudinary(icon) : null;
+  console.log("the uploaded icon is", uploadedIcon?.[0]);
   const payload = {
     ...req.body,
   };
-console.log("the payload after spreading is", payload)
+  console.log("the payload after spreading is", payload);
   if (uploadedIcon) {
     payload.icon = uploadedIcon?.[0];
   }
 
   const updatedImpactData = await ImpactModel.findOneAndUpdate(
-    {_id:req.params.id},
-    {...payload},
+    { _id: req.params.id },
+    { ...payload },
     {
       new: true,
       runValidators: false,
@@ -82,7 +99,7 @@ console.log("the payload after spreading is", payload)
 
   res.status(200).json({
     success: true,
-    data: updatedImpactData
+    data: updatedImpactData,
   });
 });
 

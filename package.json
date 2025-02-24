@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "debug": "ndb index.js"
   },
   "keywords": [],
   "author": "",
@@ -23,7 +24,8 @@
     "formidable": "^3.5.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.9.5",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "ndb": "^1.1.5"
   },
   "devDependencies": {
     "jest": "^29.7.0",

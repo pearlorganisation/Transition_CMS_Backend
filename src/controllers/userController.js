@@ -1,6 +1,7 @@
 import User from "../models/user.js";
 import ApiErrorResponse from "../utils/errors/ApiErrorResponse.js";
 import { asyncHandler } from "../utils/errors/asyncHandler.js";
+import jwt from "jsonwebtoken";
 
 export const getUserProfile = asyncHandler(async (req, res) => {
   console.log("Cookies received:", req.cookies);

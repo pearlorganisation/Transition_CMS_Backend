@@ -114,7 +114,7 @@ export const getAllPortfolios = asyncHandler(async (req, res, next) => {
     .populate({
       path: "investmentTimeline",
       populate: {
-        path: "cards",
+        path: "cards._id",
       },
     })
     .populate({

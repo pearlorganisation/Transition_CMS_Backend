@@ -39,7 +39,7 @@ app.use(
             "https://cms-3-ebon.vercel.app",
           ],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"], // Specify allowed methods
-    // credentials: true,
+    credentials: true,
   })
 );
 app.use(express.static("public"));
