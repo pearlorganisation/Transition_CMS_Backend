@@ -32,15 +32,18 @@ const PortfolioSchema = new mongoose.Schema(
         portfoliocardname: { type: String, required: true },
       },
     ],
-    coInvestedBy: [
-      {
-        _id: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "CoInvestor",
+    coInvestedBy: {
+      type: [
+        {
+          _id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "CoInvestor",
+          },
+          coInvestorname: { type: String },
         },
-        coInvestorname: { type: String },
-      },
-    ],
+      ],
+      default: [],
+    },
 
     bottomSectionIcon: {
       asset_id: { type: String, required: true },
