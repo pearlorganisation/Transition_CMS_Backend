@@ -1,43 +1,41 @@
 import mongoose from "mongoose";
-import {
-  deleteFileFromCloudinary,
-  uploadFileToCloudinary,
-} from "../utils/cloudinaryConfig.js";
 import ApiErrorResponse from "../utils/errors/ApiErrorResponse.js";
 import { asyncHandler } from "../utils/errors/asyncHandler.js";
-import { paginate } from "../utils/pagination.js";
 import FocusArea from "../models/focusArea.js";
-import path from "path";
 
+// export const getFocusAreas = asyncHandler(async (req, res, next) => {
+//   const page = parseInt(req.query.page || "1");
+//   const limit = parseInt(req.query.limit || "10");
+
+//   // Check if no obituaries are found
+//   const focusAreas = await FocusArea.find().populate("focusAreas._id");
+//   if (!focusAreas || focusAreas.length === 0) {
+//     return next(new ApiErrorResponse("No Focus Areas found", 404));
+//   }
+
+//   // Return the paginated response
+//   return res.status(200).json({
+//     success: true,
+//     message: "All focus areas found successfully",
+//     data: focusAreas,
+//   });
+// });
 export const getFocusAreas = asyncHandler(async (req, res, next) => {
-  const page = parseInt(req.query.page || "1");
-  const limit = parseInt(req.query.limit || "10");
-
-  // Use the pagination utility function
-  //   const { data: focusAreas, pagination } = await paginate(
-  //     FocusArea, // Model
-  //     page, // Current page
-  //     limit,
-  //     [
-  //       // Limit per page
-  //       // [], // No population needed
-  //       { path: "focusAreas" },
-  //     ] // No filters
-  //     // {}, // No filters
-  //     // "" // No fields to exclude or select
-  //   );
-
-  // Check if no obituaries are found
   const focusAreas = await FocusArea.find().populate("focusAreas._id");
+
   if (!focusAreas || focusAreas.length === 0) {
     return next(new ApiErrorResponse("No Focus Areas found", 404));
   }
 
-  // Return the paginated response
+  focusAreas.forEach((focusArea) => {
+    if (focusArea.focusAreas && Array.isArray(focusArea.focusAreas)) {
+      focusArea.focusAreas.sort((a, b) => a._id.order - b._id.order);
+    }
+  });
+
   return res.status(200).json({
     success: true,
     message: "All focus areas found successfully",
-    // pagination, // Include pagination metadata
     data: focusAreas,
   });
 });

@@ -9,6 +9,7 @@ const singleFeatureSchema = new mongoose.Schema(
       secure_url: { type: String, required: true },
       public_id: { type: String, required: true },
     },
+    order: { type: Number, required: true },
   },
   { timestamps: true }
 );

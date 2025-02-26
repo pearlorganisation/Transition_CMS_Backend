@@ -54,6 +54,14 @@ export const deleteFocusFeature = asyncHandler(async (req, res, next) => {
   if (!focusFeature) {
     return next(new ApiErrorResponse("focus Feature not found", 404));
   }
+  // Shift orders of remaining blogs
+  await SingleFeature.updateMany(
+    {
+      order: { $gt: focusFeature.order },
+    }, // Find blogs with higher order
+    { $inc: { order: -1 } } // Decrease order by 1
+  );
+
   return res.status(200).json({
     success: true,
     message: "focus Feature deleted successfully",
@@ -62,9 +70,20 @@ export const deleteFocusFeature = asyncHandler(async (req, res, next) => {
 
 export const createFocusFeature = asyncHandler(async (req, res, next) => {
   const { image } = req.files;
+  const { order } = req.body;
 
   // Upload main image to Cloudinary if it exists
   const uploadedImage = image ? await uploadFileToCloudinary(image) : null;
+
+  // Shift existing blogs' order if a specific order is provided
+  if (order) {
+    await SingleFeature.updateMany(
+      {
+        order: { $gte: order },
+      },
+      { $inc: { order: 1 } }
+    );
+  }
 
   // Create obituary record with uploaded images
   const focusFeatureInfo = await SingleFeature.create({
@@ -85,38 +104,90 @@ export const createFocusFeature = asyncHandler(async (req, res, next) => {
   });
 });
 
+// export const updateFocusFeature = asyncHandler(async (req, res, next) => {
+//   const { id } = req.params;
+//   const { image } = req.files || {};
+
+//   const focusFeature = await SingleFeature.findById(id);
+
+//   if (!focusFeature) {
+//     return next(new ApiErrorResponse("focusFeature not found", 404));
+//   }
+
+//   let updatedImage = focusFeature.image;
+//   if (image) {
+//     updatedImage = await uploadFileToCloudinary(image);
+//   }
+
+//   const updatedFocusFeature = await SingleFeature.findOneAndUpdate(
+//     { _id: new mongoose.Types.ObjectId(`${id}`) },
+
+//     {
+//       ...req.body,
+//       image: updatedImage[0],
+//     },
+//     { new: true }
+//   );
+
+//   if (!updatedFocusFeature) {
+//     return next(new ApiErrorResponse("Focus Feature update failed", 400));
+//   }
+
+//   return res.status(200).json({
+//     success: true,
+//     message: "Focus Feature updated successfully",
+//     data: updatedFocusFeature,
+//   });
+// });
+
 export const updateFocusFeature = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
+  const { title, features, order } = req.body;
   const { image } = req.files || {};
 
   const focusFeature = await SingleFeature.findById(id);
 
   if (!focusFeature) {
-    return next(new ApiErrorResponse("focusFeature not found", 404));
+    return next(new ApiErrorResponse("Focus Feature not found", 404));
   }
 
-  let updatedImage = focusFeature.image;
+  // Handling image update
   if (image) {
-    updatedImage = await uploadFileToCloudinary(image);
+    await deleteFileFromCloudinary(focusFeature.image); // Delete previous image
+    const uploadedImage = await uploadFileToCloudinary(image);
+    focusFeature.image = uploadedImage?.[0] || focusFeature.image;
   }
 
-  const updatedFocusFeature = await SingleFeature.findOneAndUpdate(
-    { _id: new mongoose.Types.ObjectId(`${id}`) },
+  // Updating fields if provided
+  if (title) focusFeature.title = title;
+  if (features) focusFeature.features = description;
 
-    {
-      ...req.body,
-      image: updatedImage[0],
-    },
-    { new: true }
-  );
+  // Handling order update correctly
+  if (order && order !== focusFeature.order) {
+    const oldOrder = focusFeature.order;
 
-  if (!updatedFocusFeature) {
-    return next(new ApiErrorResponse("Focus Feature update failed", 400));
+    if (order > oldOrder) {
+      // Moving down: Decrease order of items in between
+      await SingleFeature.updateMany(
+        { order: { $gt: oldOrder, $lte: order } },
+        { $inc: { order: -1 } }
+      );
+    } else {
+      // Moving up: Increase order of items in between
+      await SingleFeature.updateMany(
+        { order: { $gte: order, $lt: oldOrder } },
+        { $inc: { order: 1 } }
+      );
+    }
+
+    focusFeature.order = order;
   }
+
+  await focusFeature.save({ runValidators: true });
 
   return res.status(200).json({
     success: true,
     message: "Focus Feature updated successfully",
-    data: updatedFocusFeature,
+    data: focusFeature,
   });
 });
