@@ -32,7 +32,7 @@ export const getAllFocusFeatures = asyncHandler(async (req, res, next) => {
     message: "All Focus Features found successfully",
     pagination,
     data: focusFeatures,
-  });
+  }); 
 });
 
 export const getSingleFocusFeature = asyncHandler(async (req, res, next) => {
@@ -61,7 +61,9 @@ export const deleteFocusFeature = asyncHandler(async (req, res, next) => {
     }, // Find blogs with higher order
     { $inc: { order: -1 } } // Decrease order by 1
   );
-
+  if (focusFeature.image) {
+    await deleteFileFromCloudinary(focusFeature.image);
+  }
   return res.status(200).json({
     success: true,
     message: "focus Feature deleted successfully",
@@ -71,6 +73,27 @@ export const deleteFocusFeature = asyncHandler(async (req, res, next) => {
 export const createFocusFeature = asyncHandler(async (req, res, next) => {
   const { image } = req.files;
   const { order } = req.body;
+
+  // Ensure order is a positive integer (not 0 or negative)
+  if (order !== undefined && (isNaN(order) || order < 1)) {
+    return next(
+      new ApiErrorResponse(
+        "Order must be a positive number greater than 0",
+        400
+      )
+    );
+  }
+
+  const totalDocuments = await SingleFeature.countDocuments();
+
+  if (order && order > totalDocuments + 1) {
+    return next(
+      new ApiErrorResponse(
+        `Invalid order. Order cannot be greater than ${totalDocuments + 1}`,
+        400
+      )
+    );
+  }
 
   // Upload main image to Cloudinary if it exists
   const uploadedImage = image ? await uploadFileToCloudinary(image) : null;
@@ -88,6 +111,7 @@ export const createFocusFeature = asyncHandler(async (req, res, next) => {
   // Create obituary record with uploaded images
   const focusFeatureInfo = await SingleFeature.create({
     ...req.body,
+    order: order || totalDocuments + 1,
     image: uploadedImage[0],
   });
 
@@ -149,6 +173,20 @@ export const updateFocusFeature = asyncHandler(async (req, res, next) => {
 
   if (!focusFeature) {
     return next(new ApiErrorResponse("Focus Feature not found", 404));
+  }
+  const totalDocuments = await SingleFeature.countDocuments();
+
+  // Ensure order is a positive integer (not 0 or negative) and within valid range
+  if (
+    order !== undefined &&
+    (isNaN(order) || order < 1 || order > totalDocuments)
+  ) {
+    return next(
+      new ApiErrorResponse(
+        `Order must be between 1 and ${totalDocuments}(including 1 and ${totalDocuments})`,
+        400
+      )
+    );
   }
 
   // Handling image update
