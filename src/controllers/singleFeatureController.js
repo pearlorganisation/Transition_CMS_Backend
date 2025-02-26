@@ -160,7 +160,7 @@ export const updateFocusFeature = asyncHandler(async (req, res, next) => {
 
   // Updating fields if provided
   if (title) focusFeature.title = title;
-  if (features) focusFeature.features = description;
+  if (features) focusFeature.features = features;
 
   // Handling order update correctly
   if (order && order !== focusFeature.order) {
