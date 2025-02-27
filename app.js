@@ -29,7 +29,7 @@ app.use(
           ]
         : [
             "https://transition-cms-frontend.vercel.app",
-            "https://www.transitionventurecapital.com/",
+            "https://www.transitionventurecapital.com",
             "http://localhost:3000",
             "https://transitionventurecapital.com",
             "https://admin.transitionventurecapital.com",
