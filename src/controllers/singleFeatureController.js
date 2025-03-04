@@ -128,42 +128,6 @@ export const createFocusFeature = asyncHandler(async (req, res, next) => {
   });
 });
 
-// export const updateFocusFeature = asyncHandler(async (req, res, next) => {
-//   const { id } = req.params;
-//   const { image } = req.files || {};
-
-//   const focusFeature = await SingleFeature.findById(id);
-
-//   if (!focusFeature) {
-//     return next(new ApiErrorResponse("focusFeature not found", 404));
-//   }
-
-//   let updatedImage = focusFeature.image;
-//   if (image) {
-//     updatedImage = await uploadFileToCloudinary(image);
-//   }
-
-//   const updatedFocusFeature = await SingleFeature.findOneAndUpdate(
-//     { _id: new mongoose.Types.ObjectId(`${id}`) },
-
-//     {
-//       ...req.body,
-//       image: updatedImage[0],
-//     },
-//     { new: true }
-//   );
-
-//   if (!updatedFocusFeature) {
-//     return next(new ApiErrorResponse("Focus Feature update failed", 400));
-//   }
-
-//   return res.status(200).json({
-//     success: true,
-//     message: "Focus Feature updated successfully",
-//     data: updatedFocusFeature,
-//   });
-// });
-
 export const updateFocusFeature = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   const { title, features, order } = req.body;

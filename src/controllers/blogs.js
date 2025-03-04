@@ -1,19 +1,38 @@
-// @desc    Create a new blog
-// @route   POST /api/blogs
-
-import { copyFileSync } from "fs";
 import { BlogModel } from "../models/blogs.js";
 import {
   deleteFileFromCloudinary,
   uploadFileToCloudinary,
 } from "../utils/cloudinaryConfig.js";
 import { asyncHandler } from "../utils/errors/asyncHandler.js";
+import ApiErrorResponse from "../utils/errors/ApiErrorResponse.js";
 
 // @access  Public
-export const createBlog = asyncHandler(async (req, res) => {
+export const createBlog = asyncHandler(async (req, res, next) => {
   const { title, shortTitle, dateMetaData, link, blogType, blogBody, order } =
     req.body;
   const { icon } = req.files;
+
+  // Ensure order is a positive integer (not 0 or negative)
+  if (order !== undefined && (isNaN(order) || order < 1)) {
+    return next(
+      new ApiErrorResponse(
+        "Order must be a positive number greater than 0",
+        400
+      )
+    );
+  }
+
+  const totalDocuments = await BlogModel.countDocuments({ blogType });
+
+  if (order && order > totalDocuments + 1) {
+    return next(
+      new ApiErrorResponse(
+        `Invalid order. Order cannot be greater than ${totalDocuments + 1}`,
+        400
+      )
+    );
+  }
+
   const uploadedIcon = icon ? await uploadFileToCloudinary(icon) : null;
   if (!title || !icon) {
     res
@@ -38,7 +57,7 @@ export const createBlog = asyncHandler(async (req, res) => {
     dateMetaData,
     link,
     blogType,
-    order: order || (await BlogModel.countDocuments({ blogType })) + 1, // Assign order if not provided
+    order: order || totalDocuments + 1, // Assign order if not provided
     icon: uploadedIcon ? uploadedIcon?.[0] : null,
     blogBody,
   });
@@ -93,98 +112,15 @@ export const getBlogById = asyncHandler(async (req, res) => {
   });
 });
 
-// @desc    Update a blog
-// @route   PUT /api/blogs/:id
-// @access  Public
-// export const updateBlog = asyncHandler(async (req, res) => {
-//   const blog = await BlogModel.findById(req.params.id);
-//   const { title, blogBody, shortTitle, link, blogType, dateMetaData, order } =
-//     req.body;
-
-//   const { icon } = req.files;
-//   if (!blog) {
-//     res.status(404).json({
-//       status: true,
-//       message: "Blog not found successfully",
-//     });
-//   }
-//   // if(icon){
-//   // const uploadedIcon = icon ? await uploadFileToCloudinary(icon) : null;
-//   // await deleteFileFromCloudinary(blog.icon) // utility function to delete the icon
-
-//   // console.log("the requested body is", req.body)
-
-//   // const updatedBlog = await BlogModel.findByIdAndUpdate(req.params.id, {...req.body,
-//   //     icon: uploadedIcon?uploadedIcon?.[0] : null
-//   // }, {
-//   //     new: true,
-//   //     runValidators: true
-//   // });
-
-//   // res.status(200).json({
-//   //     status: true,
-//   //     message: "Blog updated successfully",
-//   //     data:updatedBlog
-//   // });}else{
-//   //         const updatedBlog = await BlogModel.findByIdAndUpdate(req.params.id,req.body, {
-//   //             new: true,
-//   //             runValidators: true
-//   //         });
-
-//   //         res.status(200).json({
-//   //             status: true,
-//   //             message: "Blog updated successfully",
-//   //             data: updatedBlog
-//   //         });
-//   // }
-
-//   // const payload ={};
-//   if (icon) {
-//     await deleteFileFromCloudinary(blog?.icon); // first deleting the previous image
-//     const upload = await uploadFileToCloudinary(icon);
-//     //payload.icon = upload[0]
-//     blog.icon = upload?.[0];
-//   }
-//   if (title) {
-//     blog.title = title;
-//   }
-//   if (blogBody) {
-//     blog.blogBody = blogBody;
-//   }
-//   if (shortTitle) {
-//     blog.shortTitle = shortTitle;
-//   }
-
-//   if (link) {
-//     blog.link = link;
-//   }
-//   if (blogType) {
-//     blog.blogType = blogType;
-//   }
-//   if (dateMetaData) {
-//     blog.dateMetaData = dateMetaData;
-//   }
-//   if (order) {
-//     blog.order = order;
-//   }
-//   await blog.save({ runValidators: false });
-//   return res.status(200).json({
-//     status: true,
-//     message: "Blog updated successfully",
-//     data: blog,
-//   });
-// });
-
-// @desc    Delete a blog
-// @route   DELETE /api/blogs/:id
-// @access  Public
 export const deleteBlog = asyncHandler(async (req, res) => {
   const blog = await BlogModel.findById(req.params.id);
 
   if (!blog) {
-    res.status(404).json({ status: false, message: "Blog Not Found" });
+    return res.status(404).json({ status: false, message: "Blog Not Found" });
   }
-
+  if (blog.icon) {
+    await deleteFileFromCloudinary(blog.icon);
+  }
   await blog.deleteOne();
 
   // Shift orders of remaining blogs
@@ -202,7 +138,7 @@ export const deleteBlog = asyncHandler(async (req, res) => {
   });
 });
 
-export const updateBlog = asyncHandler(async (req, res) => {
+export const updateBlog = asyncHandler(async (req, res, next) => {
   const blog = await BlogModel.findById(req.params.id);
   if (!blog) {
     return res.status(404).json({
@@ -214,6 +150,31 @@ export const updateBlog = asyncHandler(async (req, res) => {
   const { title, blogBody, shortTitle, link, blogType, dateMetaData, order } =
     req.body;
   const { icon } = req.files || {};
+
+  // Conditional validation: If 'order' is provided, 'blogType' must also be present
+  if (order !== undefined && !blogType) {
+    return next(
+      new ApiErrorResponse("Blog type is required when providing an order", 400)
+    );
+  }
+
+  // Get the total number of Blogs for the provided type
+  const totalDocuments = await BlogModel.countDocuments({
+    blogType,
+  });
+
+  // Ensure order is valid
+  if (
+    order !== undefined &&
+    (isNaN(order) || order < 1 || order > totalDocuments)
+  ) {
+    return next(
+      new ApiErrorResponse(
+        `Order must be between 1 and ${totalDocuments} (including 1 and ${totalDocuments})`,
+        400
+      )
+    );
+  }
 
   // Handling image update
   if (icon) {
