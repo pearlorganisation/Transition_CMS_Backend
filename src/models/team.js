@@ -8,10 +8,14 @@ const teamSchema = new mongoose.Schema(
       secure_url: { type: String, required: true },
       public_id: { type: String, required: true },
     },
-
     bio: { type: String, required: true },
     link: { type: String, required: true },
-    type: { type: String, required: true },
+    type: {
+      type: String,
+      enum: ["executive_team", "general_partners", "experts"],
+      required: true,
+    },
+    order: { type: Number },
   },
   { timestamps: true }
 );
